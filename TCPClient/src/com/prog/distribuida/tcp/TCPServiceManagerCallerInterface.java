@@ -15,6 +15,6 @@ public interface TCPServiceManagerCallerInterface {
     
     public void messageReceiveFromClient(Socket clientSocket, byte[] data);
     public void errorHasBeenThrown(Exception error);
-    public void notify(String message);
+    public void notify(String message, String type);
     
 }

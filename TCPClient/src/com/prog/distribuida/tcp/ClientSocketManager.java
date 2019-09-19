@@ -6,14 +6,11 @@
 package com.prog.distribuida.tcp;
 
 import com.prog.distribuida.models.FilePart;
-import java.io.BufferedReader;
+import com.prog.distribuida.utils.Constants;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
@@ -76,7 +73,6 @@ public class ClientSocketManager extends Thread {
 
     public void assignSocketToThisThread(Socket socket) {
         this.clientSocket = socket;
-        
         this.notifyMutex();
     }
 
@@ -84,7 +80,7 @@ public class ClientSocketManager extends Thread {
         try {
             this.clientSocket = new Socket(serverIpAddress, port);
             this.initializeStreams();
-            this.caller.notify("Conexión lista");
+            this.caller.notify("Conexión lista", Constants.UPLOAD);
             return true;
         } catch (Exception ex) {
             caller.errorHasBeenThrown(ex);
@@ -123,12 +119,14 @@ public class ClientSocketManager extends Thread {
     }
 
     public void sendFile(File file) {
-        FilePart fp = new FilePart((int)Math.ceil((double)file.length() / (double)PARTITION_SIZE), null, file.getName()); 
+        int totalParts = (int)Math.ceil((double)file.length() / (double)PARTITION_SIZE);
+        FilePart fp = new FilePart(totalParts, null, file.getName()); 
         sendMessage(fp);
         System.out.println("Part number");
+        String fileName = file.getName();
         long currentBytes = 0;
         long fileSize = file.length();
-        
+        System.out.println(totalParts);
         byte[] partData = new byte[PARTITION_SIZE];
         int bytesAmount = 0;
         try {
@@ -137,7 +135,12 @@ public class ClientSocketManager extends Thread {
             while ((bytesAmount = fis.read(partData)) > 0) {
                 //write each chunk of data into separate file with different number in name
                 currentBytes += bytesAmount;
-                FilePart part = new FilePart(i, partData, file.getName());
+                FilePart part = new FilePart(i, partData, fileName);
+                if(i != 0){
+                    double percent = Math.round((new Double(i)/new Double(totalParts))*100);
+                    caller.notify(fileName + " " + percent + "% Uploaded", Constants.UPLOAD);
+                }
+                
                 sendMessage(part);
                 System.out.println("part " + i);
                 i++;
@@ -145,6 +148,7 @@ public class ClientSocketManager extends Thread {
                 partData = new byte[newPartSize];
             }
             this.clientSocket.close();
+            caller.notify("File uploaded!", Constants.UPLOAD);
             this.clientSocket = null;
         } catch (Exception e) {
             System.out.println(e);
