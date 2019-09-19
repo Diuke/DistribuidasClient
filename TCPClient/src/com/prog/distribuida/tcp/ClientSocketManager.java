@@ -19,7 +19,7 @@ import java.net.Socket;
  */
 public class ClientSocketManager extends Thread {
 
-    public static final int PARTITION_SIZE = 1500;
+    public static final int PARTITION_SIZE = 1300;
 
     Socket clientSocket;
     ObjectInputStream reader;

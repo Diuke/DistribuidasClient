@@ -73,7 +73,8 @@ public class Downloader {
     }
 
     public InputStream downloadFileFromServer(String server, String port, String filename, TCPServiceManagerCallerInterface caller) throws Exception {
-
+        
+        filename.replaceAll(" ", "%20");
         String url = "http://" + server + ":" + port + "/WebPool/api/files" + "/" + filename;
 
         HttpClient client = HttpClients.createDefault();

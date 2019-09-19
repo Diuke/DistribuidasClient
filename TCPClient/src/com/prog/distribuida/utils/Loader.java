@@ -28,20 +28,25 @@ public class Loader extends Thread{
     TCPServiceManagerCallerInterface caller;
     String server;
     String port;
+    String PATH;
     
     public Loader(String ip, String port, TCPServiceManagerCallerInterface caller, File file) {
         clientSocketManager = new ClientSocketManager(ip, Integer.parseInt(port), caller);
         this.file = file;
+        if(this.file.getName().contains(" ")){
+            this.file.renameTo(new File(this.file.getName().replaceAll(" ", "%20")));
+        }
         this.type = "UPLOAD";
         start();
     }
     
-    public Loader(String fileName, String server, String port, TCPServiceManagerCallerInterface caller){
+    public Loader(String fileName, String server, String port, TCPServiceManagerCallerInterface caller, String PATH){
         this.fileName = fileName;
         this.server = server;
         this.port = port;
         this.downloader = new Downloader();
         this.caller = caller;
+        this.PATH = PATH;
         this.type = "DOWNLOAD";
         start();
     }
@@ -53,7 +58,7 @@ public class Loader extends Thread{
         if(type.equals("DOWNLOAD")){
             try {
                 InputStream is = this.downloader.downloadFileFromServer(server, port, fileName, caller);
-                FileOutputStream fos = new FileOutputStream(new File(fileName));
+                FileOutputStream fos = new FileOutputStream(new File(PATH + "/" + fileName));
                 int inByte;
                 long currentBytes = 0;
                 long mod = 1024;
