@@ -78,6 +78,8 @@ public class GUI extends javax.swing.JFrame implements TCPServiceManagerCallerIn
         jSeparator1 = new javax.swing.JSeparator();
         downloadServerPort = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -145,6 +147,10 @@ public class GUI extends javax.swing.JFrame implements TCPServiceManagerCallerIn
 
         jLabel4.setText("Port");
 
+        jLabel7.setText("Path");
+
+        jTextField1.setText("C://IDSTRIBUIDA/P1/FILES");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -172,6 +178,10 @@ public class GUI extends javax.swing.JFrame implements TCPServiceManagerCallerIn
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(68, 68, 68)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTextField1))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -203,7 +213,7 @@ public class GUI extends javax.swing.JFrame implements TCPServiceManagerCallerIn
                         .addGap(29, 29, 29)
                         .addComponent(jSeparator1))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
@@ -224,10 +234,15 @@ public class GUI extends javax.swing.JFrame implements TCPServiceManagerCallerIn
                                     .addComponent(jButton2))
                                 .addGap(18, 18, 18)
                                 .addComponent(jButton3)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addGap(0, 5, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(1, 1, 1)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jButton4)
-                                .addGap(37, 37, 37)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(fileListCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton1)
@@ -267,7 +282,7 @@ public class GUI extends javax.swing.JFrame implements TCPServiceManagerCallerIn
             this.fileList = this.downloadManager.getFileList(downloadServerUrl.getText(), downloadServerPort.getText(), this);
             fileListCombo.removeAllItems();
             for(String fileName : this.fileList){
-                fileListCombo.addItem(fileName);
+                fileListCombo.addItem(fileName.replaceAll("%20", " "));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -278,9 +293,14 @@ public class GUI extends javax.swing.JFrame implements TCPServiceManagerCallerIn
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        String PATH = jTextField1.getText();
+        File folder = new File(PATH);
+        if(! folder.exists()){
+            folder.mkdirs();
+        }
         String fileName = fileListCombo.getSelectedItem().toString();
         System.out.println(fileName);
-        Loader loader = new Loader(fileName, downloadServerUrl.getText(), downloadServerPort.getText(), this);
+        Loader loader = new Loader(fileName, downloadServerUrl.getText(), downloadServerPort.getText(), this, PATH);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -337,10 +357,12 @@ public class GUI extends javax.swing.JFrame implements TCPServiceManagerCallerIn
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField portTextBox;
     // End of variables declaration//GEN-END:variables
 
