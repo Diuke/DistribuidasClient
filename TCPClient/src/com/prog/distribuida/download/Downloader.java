@@ -10,10 +10,10 @@ import com.google.gson.reflect.TypeToken;
 import com.prog.distribuida.models.Response;
 import com.prog.distribuida.tcp.TCPServiceManagerCallerInterface;
 import com.prog.distribuida.utils.Constants;
+import com.prog.distribuida.utils.Utils;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
-import javax.swing.JTextArea;
 
 
 
@@ -73,21 +73,31 @@ public class Downloader {
     }
 
     public InputStream downloadFileFromServer(String server, String port, String filename, TCPServiceManagerCallerInterface caller) throws Exception {
+        HttpResponse response = null;
+        try {
+            filename.replaceAll(" ", "%20");
+            String url = "http://" + server + ":" + port + "/WebPool/api/files" + "/" + filename;
+
+            HttpClient client = HttpClients.createDefault();
+            HttpGet request = new HttpGet(url);
+
+            // add request header
+            request.addHeader("User-Agent", USER_AGENT);
+
+            System.out.println("[LBS] Requesting " + filename + " to server@" + server);
+
+            response = client.execute(request);
+
+            return response.getEntity().getContent();
+        } catch (Exception e) {
+            if(response.getStatusLine().getStatusCode() == 404){
+                caller.notify("Error 404 - File not found", Constants.DOWNLOAD);
+            } else {
+                caller.notify("Error downloading file", Constants.DOWNLOAD);
+            }
+            return null;
+        }
         
-        filename.replaceAll(" ", "%20");
-        String url = "http://" + server + ":" + port + "/WebPool/api/files" + "/" + filename;
-
-        HttpClient client = HttpClients.createDefault();
-        HttpGet request = new HttpGet(url);
-
-        // add request header
-        request.addHeader("User-Agent", USER_AGENT);
-
-        System.out.println("[LBS] Requesting " + filename + " to server@" + server);
-
-        HttpResponse response = client.execute(request);
-
-        return response.getEntity().getContent();
     }
 }
 

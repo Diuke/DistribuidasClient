@@ -17,11 +17,6 @@ import com.prog.distribuida.utils.Constants;
 import java.util.ArrayList;
 import javax.swing.text.DefaultCaret;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
-
 /**
  *
  * @author edangulo

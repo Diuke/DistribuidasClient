@@ -58,23 +58,28 @@ public class Loader extends Thread{
         if(type.equals("DOWNLOAD")){
             try {
                 InputStream is = this.downloader.downloadFileFromServer(server, port, fileName, caller);
-                FileOutputStream fos = new FileOutputStream(new File(PATH + "/" + fileName));
-                int inByte;
-                long currentBytes = 0;
-                long mod = 1024;
-                long multiplier = 100;
-                String units = "Bytes";
-                while((inByte = is.read()) != -1){
-                    currentBytes++;
-                    if(currentBytes % (mod*multiplier) == 0){
-                        caller.notify("Downloaded " + (currentBytes) + " " + units + " from " + fileName, Constants.DOWNLOAD);
+                if(is != null){
+                    FileOutputStream fos = new FileOutputStream(new File(PATH + "/" + fileName));
+                    int inByte;
+                    long currentBytes = 0;
+                    long mod = 1024;
+                    long multiplier = 100;
+                    String units = "Bytes";
+                    while((inByte = is.read()) != -1){
+                        currentBytes++;
+                        if(currentBytes % (mod*multiplier) == 0){
+                            caller.notify("Downloaded " + (currentBytes) + " " + units + " from " + fileName, Constants.DOWNLOAD);
+                        }
+                        fos.write(inByte);
                     }
-                    fos.write(inByte);
+                    is.close();
+                    fos.close();
+                    caller.notify("File" + fileName + " finished downloading correctly", Constants.DOWNLOAD);
+                    caller.notify(fileName + " Total size: " + (currentBytes) + " " + units, Constants.DOWNLOAD);
+                } else {
+                    
                 }
-                is.close();
-                fos.close();
-                caller.notify("File" + fileName + " finished downloading correctly", Constants.DOWNLOAD);
-                caller.notify(fileName + " Total size: " + (currentBytes) + " " + units, Constants.DOWNLOAD);
+                
             } catch (Exception e) {
                 file.delete();
                 e.printStackTrace();
