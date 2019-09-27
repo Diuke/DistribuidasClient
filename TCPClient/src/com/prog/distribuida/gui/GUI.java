@@ -84,9 +84,9 @@ public class GUI extends javax.swing.JFrame implements TCPServiceManagerCallerIn
 
         jLabel1.setText("Server IP");
 
-        ipTextBox.setText("127.0.0.1");
+        ipTextBox.setText("172.17.9.196");
 
-        portTextBox.setText("9090");
+        portTextBox.setText("9092");
 
         jLabel2.setText("Port");
 
@@ -106,7 +106,7 @@ public class GUI extends javax.swing.JFrame implements TCPServiceManagerCallerIn
 
         jLabel3.setText("Server URL");
 
-        downloadServerUrl.setText("127.0.0.1");
+        downloadServerUrl.setText("172.17.9.196");
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -144,7 +144,7 @@ public class GUI extends javax.swing.JFrame implements TCPServiceManagerCallerIn
 
         jLabel7.setText("Path");
 
-        jTextField1.setText("C://IDSTRIBUIDA/P1/FILES");
+        jTextField1.setText("C://DISTRIBUIDA/P1/DOWLOADS");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
